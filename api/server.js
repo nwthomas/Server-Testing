@@ -28,4 +28,28 @@ server.get("/users", async (req, res) => {
   }
 });
 
+server.post("/users", async (req, res) => {
+  const newUser = req.body;
+  try {
+    const createdUser = await Users.insert(newUser);
+    if (createdUser) {
+      res
+        .status(200)
+        .json({
+          message: "New user created successfully in the database.",
+          createdUser
+        });
+    } else {
+      res
+        .status(404)
+        .json({ message: "The user could not be created in the database." });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "There was an error creating the user in the database.",
+      error
+    });
+  }
+});
+
 module.exports = server;
