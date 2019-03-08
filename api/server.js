@@ -32,13 +32,12 @@ server.post("/users", async (req, res) => {
   const newUser = req.body;
   try {
     const createdUser = await Users.insert(newUser);
+    console.log(createdUser);
     if (createdUser) {
-      res
-        .status(200)
-        .json({
-          message: "New user created successfully in the database.",
-          createdUser
-        });
+      res.status(200).json({
+        message: "New user created successfully in the database.",
+        createdUser
+      });
     } else {
       res
         .status(404)
@@ -47,6 +46,31 @@ server.post("/users", async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "There was an error creating the user in the database.",
+      error
+    });
+  }
+});
+
+server.delete("/users/:id", async (req, res) => {
+  try {
+    const deletedUser = await Users.remove(req.params.id);
+    if (deletedUser) {
+      res
+        .status(200)
+        .json({
+          message: "The user was deleted successfully from the database",
+          numDeleted: deletedUser
+        });
+    } else {
+      res
+        .status(404)
+        .json({
+          message: "The user could not be deleted in the database at this time."
+        });
+    }
+  } catch (user) {
+    res.status(500).json({
+      message: "There was an error deleting the user in the database.",
       error
     });
   }
